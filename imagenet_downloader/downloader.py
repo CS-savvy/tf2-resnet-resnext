@@ -13,14 +13,14 @@ from requests.exceptions import ConnectionError, ReadTimeout, TooManyRedirects, 
 
 parser = argparse.ArgumentParser(description='ImageNet image scraper')
 parser.add_argument('-scrape_only_flickr', default=True, type=lambda x: (str(x).lower() == 'true'))
-parser.add_argument('-number_of_classes', default = 10, type=int)
-parser.add_argument('-images_per_class', default = 10, type=int)
-parser.add_argument('-data_root', default='' , type=str)
-parser.add_argument('-use_class_list', default=False,type=lambda x: (str(x).lower() == 'true'))
+parser.add_argument('-number_of_classes', default=10, type=int)
+parser.add_argument('-images_per_class', default=10, type=int)
+parser.add_argument('-data_root', default='dataset', type=str)
+parser.add_argument('-use_class_list', default=False, type=lambda x: (str(x).lower() == 'true'))
 parser.add_argument('-class_list', default=[], nargs='*')
-parser.add_argument('-debug', default=False,type=lambda x: (str(x).lower() == 'true'))
+parser.add_argument('-debug', default=False, type=lambda x: (str(x).lower() == 'true'))
 
-parser.add_argument('-multiprocessing_workers', default = 8, type=int)
+parser.add_argument('-multiprocessing_workers', default=8, type=int)
 
 args, args_other = parser.parse_known_args()
 
@@ -262,7 +262,7 @@ def get_image(img_url):
                 add_stats_to_debug_csv()
 
     try:
-        img_resp = requests.get(img_url, timeout = 1)
+        img_resp = requests.get(img_url, timeout = 5)
     except ConnectionError:
         logging.debug(f"Connection Error for url {img_url}")
         return finish('failure')
@@ -329,10 +329,11 @@ for class_wnid in classes_to_scrape:
     class_images.value = 0
 
     urls = [url.decode('utf-8') for url in resp.content.splitlines()]
+    urls = [ur for ur in urls if 'flickr' in ur]
 
-    #for url in  urls:
-    #    get_image(url)
+    for url in urls:
+       get_image(url)
 
-    print(f"Multiprocessing workers: {args.multiprocessing_workers}")
-    with Pool(processes=args.multiprocessing_workers) as p:
-        p.map(get_image,urls)
+    # print(f"Multiprocessing workers: {args.multiprocessing_workers}")
+    # with Pool(processes=args.multiprocessing_workers) as p:
+    #     p.map(get_image, urls)

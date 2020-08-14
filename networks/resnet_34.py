@@ -4,7 +4,7 @@ from tensorflow.keras import models
 
 class ResNext:
 
-    def __init__(self, input_shape = (224, 224, 3), cardinality = 1):
+    def __init__(self, input_shape=(224, 224, 3), cardinality=1):
 
         self.img_height, self.img_width, self.img_channels = input_shape
         self.cardinality = cardinality

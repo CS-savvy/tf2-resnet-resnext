@@ -5,7 +5,7 @@ from tqdm import tqdm
 root_dir = Path.cwd()
 dataset_path = root_dir / "Dataset" / "tiny-imagenet-200"
 
-temp_dataset_path = dataset_path / "temp"
+temp_dataset_path = dataset_path / "small"
 
 if not temp_dataset_path.exists():
     temp_dataset_path.mkdir()
